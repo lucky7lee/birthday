@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비가 내립니다...</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="rain-page">
+  <canvas id="rain-canvas" aria-hidden="true"></canvas>
+  <div class="storm-fog" aria-hidden="true"></div>
+  <div id="lightning" class="lightning-flash" aria-hidden="true"></div>
+
+  <main class="rain-container">
+    <div class="rain-icon" aria-hidden="true">🌧️</div>
+    <p class="rain-message">
+      그는 쪼잔한 사람이 아닙니다.
+    </p>
+    <p class="rain-submessage">
+      그는 막 자란 사람이 아니라, 아주 귀하게 자랐습니다.
+    </p>
+    <div class="rain-actions">
+      <a href="index.html" class="btn btn-back-dark">처음으로 돌아가기</a>
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('rain-canvas');
+    const ctx = canvas.getContext('2d');
+    const lightningEl = document.getElementById('lightning');
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const drops = [];
+    const splashes = [];
+    const dropCount = 190;
+
+    function createDrop(randomY = false) {
+      return {
+        x: Math.random() * (width + 120) - 60,
+        y: randomY ? Math.random() * height : -40 - Math.random() * 120,
+        len: 14 + Math.random() * 20,
+        speed: 9 + Math.random() * 8,
+        wind: -1.4 - Math.random() * 0.8,
+        alpha: 0.2 + Math.random() * 0.35
+      };
+    }
+
+    for (let i = 0; i < dropCount; i++) {
+      drops.push(createDrop(true));
+    }
+
+    function animateRain() {
+      ctx.clearRect(0, 0, width, height);
+
+      // 빗줄기 그리기
+      for (let i = 0; i < drops.length; i++) {
+        const d = drops[i];
+        d.x += d.wind;
+        d.y += d.speed;
+
+        ctx.strokeStyle = `rgba(148, 163, 184, ${d.alpha})`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x + d.wind * 1.4, d.y + d.len);
+        ctx.stroke();
+
+        if (d.y > height - 10) {
+          if (Math.random() < 0.35) {
+            splashes.push({
+              x: d.x,
+              y: height - 6 - Math.random() * 14,
+              r: 2,
+              maxR: 10 + Math.random() * 10,
+              alpha: 0.35
+            });
+          }
+          drops[i] = createDrop(false);
+        }
+      }
+
+      // 바닥 빗물 파문 그리기
+      for (let i = splashes.length - 1; i >= 0; i--) {
+        const s = splashes[i];
+        s.r += 0.65;
+        s.alpha -= 0.014;
+
+        if (s.alpha <= 0 || s.r >= s.maxR) {
+          splashes.splice(i, 1);
+          continue;
+        }
+
+        ctx.strokeStyle = `rgba(148, 163, 184, ${s.alpha})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(s.x, s.y, s.r, s.r * 0.32, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(animateRain);
+    }
+
+    animateRain();
+
+    // 가끔 어두운 번개 번쩍임 효과
+    function triggerLightning() {
+      lightningEl.style.opacity = '1';
+      setTimeout(() => {
+        lightningEl.style.opacity = '0';
+      }, 90);
+      setTimeout(() => {
+        lightningEl.style.opacity = '0.6';
+      }, 170);
+      setTimeout(() => {
+        lightningEl.style.opacity = '0';
+      }, 260);
+
+      const nextDelay = 4500 + Math.random() * 6500;
+      setTimeout(triggerLightning, nextDelay);
+    }
+
+    setTimeout(triggerLightning, 2800);
+  </script>
+</body>
+</html>
