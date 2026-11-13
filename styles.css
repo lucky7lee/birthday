@@ -382,6 +382,65 @@ body.celebrate-page {
   transform: translateY(-2px);
 }
 
+@media (max-width: 600px), (max-height: 780px) {
+  body.celebrate-page {
+    min-height: 100dvh;
+    padding: 28px 14px 16px;
+    overflow-y: auto;
+  }
+
+  .bunting {
+    height: 28px;
+  }
+
+  .flag {
+    border-left-width: 14px;
+    border-right-width: 14px;
+    border-top-width: 24px;
+  }
+
+  .fanfare-banner {
+    font-size: 0.9rem;
+    padding: 5px 14px;
+    margin-bottom: 8px;
+  }
+
+  .cake-wrapper {
+    margin: 4px auto 10px;
+  }
+
+  .cake-svg {
+    width: min(175px, 44vw, 23vh);
+  }
+
+  .celebrate-message-box {
+    padding: 14px 16px;
+    border-radius: 18px;
+    margin-bottom: 10px;
+  }
+
+  .celebrate-message {
+    font-size: clamp(0.98rem, 3.8vw, 1.25rem);
+    line-height: 1.42;
+  }
+
+  .ticket-wrapper {
+    max-width: min(390px, 90vw);
+    margin: 0 auto 12px;
+  }
+
+  .celebrate-actions {
+    gap: 8px;
+  }
+
+  .btn-fanfare,
+  .btn-back-light {
+    font-size: 0.85rem;
+    padding: 9px 14px;
+    border-radius: 12px;
+  }
+}
+
 /* ==================== RAIN PAGE ==================== */
 body.rain-page {
   display: flex;
